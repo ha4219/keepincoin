@@ -108,12 +108,10 @@ async def uploader(
 	try:
 		execute_alignment(front, "test.bin")
 	except Exception as exc:
-		print(exc)
 		raise HTTPException(status_code=518, detail="alignment error") from exc
 	try:
 		execute_parsing(front, "test.png")
 	except Exception as exc:
-		print(exc)
 		raise HTTPException(status_code=519, detail="parsing error") from exc
 
 	return {'k': 'h'}
