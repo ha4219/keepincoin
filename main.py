@@ -6,10 +6,11 @@ from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 import torch
 import numpy as np
 import cv2
+import io
+from PIL import Image
 
 from config import Settings
 from face_parsing.face_parsing import _execute_face_parsing
-
 
 settings = Settings()
 
@@ -18,29 +19,21 @@ app = FastAPI()
 
 # TODO(ha4219): #2 FEAT connect torch model(face_alignment, face_parsing) by cpu
 
-alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))\
-	.face_alignment_net.to(settings.KEEPCUDA)
+alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
-
 
 def execute_alignment(img, dst: str):
 	'''
 	run alignment
 	'''
-	np.array(alignment.get_landmarks(img)).tofile(dst)
+	np.array(alignment.get_landmarks(np.array(img))).tofile(dst)
 
 def execute_parsing(img, dst: str):
 	'''
 	run parsing
 	'''
+	print(type(img))
 	_execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
-
-def load_image_into_numpy_array(data):
-	''' fastapi image file to numpy image'''
-	npimg = np.frombuffer(data, np.uint8)
-	frame = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-	cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-	return frame
 
 # TODO(ha4219): #1 FEAT post backbone function
 
@@ -101,24 +94,26 @@ async def uploader(
 			true(추가)
 			false(추가하지않음) - default
 	Return
-	---------
+	-----------
 		res: json
 		return saved path
 	'''
 	if not front:
 		raise HTTPException(status_code=517, detail="front parameter is required.")
-	front = load_image_into_numpy_array(await front.read())
-	front_text = load_image_into_numpy_array(await text.read())
-	back = load_image_into_numpy_array(await back.read())
-	back_text = load_image_into_numpy_array(await back_text.read())
+	front = Image.open(io.BytesIO(await front.read()))
+	front_text = Image.open(io.BytesIO(await front_text.read())) if text else 'NONE'
+	back = Image.open(io.BytesIO(await back.read())) if back else 'NONE'
+	back_text = Image.open(io.BytesIO(await back_text.read())) if back_text else 'NONE'
 
 	try:
-		execute_alignment(front, "")
+		execute_alignment(front, "test.bin")
 	except Exception as exc:
+		print(exc)
 		raise HTTPException(status_code=518, detail="alignment error") from exc
 	try:
-		execute_parsing(front, "")
+		execute_parsing(front, "test.png")
 	except Exception as exc:
+		print(exc)
 		raise HTTPException(status_code=519, detail="parsing error") from exc
 
-	return {}
+	return {'k': 'h'}
