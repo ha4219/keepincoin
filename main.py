@@ -1,43 +1,44 @@
-from typing import Union
-
-from fastapi import FastAPI, Form, File, UploadFile
-from pydantic import BaseSettings
-import torch
+'''
+des
+'''
 import os
+from fastapi import FastAPI
+import torch
+import numpy as np
+from config import Settings
 
 from face_parsing.face_parsing import _execute_face_parsing
 
-class Settings(BaseSettings):
-  # TODO DOCKER inject
-  KEEPMODEL: str = "/keepincoin/models"
-  KEEPASSET: str = "/keepincoin/assets"
-  KEEPCUDA: str = "cpu"
-
-  class Config:
-    env_file = ".env"
 
 settings = Settings()
 
 app = FastAPI()
 
 
-# TODO #2 FEAT connect torch model(face_alignment, face_parsing) by cpu
+# TODO(ha4219): #2 FEAT connect torch model(face_alignment, face_parsing) by cpu
 
-alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth')).face_alignment_net.to(settings.KEEPCUDA)
+alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))\
+	.face_alignment_net.to(settings.KEEPCUDA)
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
 
 
-def execute_alignment(img, dst):
-  import numpy as np
-  np.array(alignment.get_landmarks(img)).tofile(dst)
+def execute_alignment(img, dst: str):
+	'''
+	run alignment
+	'''
+	np.array(alignment.get_landmarks(img)).tofile(dst)
 
-def execute_parsing(img, dst):
-  _execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
+def execute_parsing(img, dst: str):
+	'''
+	run parsing
+	'''
+	_execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
 
-# TODO #1 FEAT post backbone function
+# TODO(ha4219): #1 FEAT post backbone function
 
 @app.get('/')
 def read_root():
-  return {"Hello": "World"}
-
-
+	'''
+	url / test
+	'''
+	return {"Hello": "World"}
