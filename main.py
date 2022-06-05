@@ -16,8 +16,6 @@ settings = Settings()
 app = FastAPI()
 
 
-# TODO(ha4219): #2 FEAT connect torch model(face_alignment, face_parsing) by cpu
-
 alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
 
@@ -32,8 +30,6 @@ def execute_parsing(img, dst: str):
     run parsing
     '''
     _execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
-
-# TODO(ha4219): #1 FEAT post backbone function
 
 @app.get('/')
 def read_root():
