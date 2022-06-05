@@ -63,7 +63,7 @@ def execute_face_parsing(respth='./res/test_res', dspth='./data', net=''):
 
     with torch.no_grad():
         img = Image.open(dspth).convert("RGB")
-        image = img.resize((512, 512), Image.INTER_LINEAR)
+        image = img.resize((512, 512), Image.BILINEAR)
         img = to_tensor(image)
         img = torch.unsqueeze(img, 0)
         img = img.cuda()
