@@ -112,4 +112,5 @@ async def uploader(
     except Exception as exc:
         raise HTTPException(status_code=519, detail="parsing error") from exc
 
-    return {'k': 'h'}
+
+    return {'style': style, 'shape': shape, 'border': border, 'embo': embo, 'emboline': emboline}

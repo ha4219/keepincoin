@@ -6,7 +6,7 @@ import torch
 from config import Settings
 
 from face_parsing import BiSeNet
-from face_alignment import FaceAlignment, LandmarksType
+from face_alignment import FaceAlignment
 
 
 def extract_model_feature():
@@ -16,7 +16,7 @@ def extract_model_feature():
 		:return {None}: none
 	'''
     settings = Settings()
-    alignment = FaceAlignment(LandmarksType._3D, flip_input=False)
+    alignment = FaceAlignment(3, flip_input=False)
 
     torch.save(alignment, os.path.join(settings.KEEPMODEL, "face_alignment.pth"))
 
