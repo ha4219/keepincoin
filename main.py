@@ -16,8 +16,6 @@ settings = Settings()
 app = FastAPI()
 
 
-# TODO(ha4219): #2 FEAT connect torch model(face_alignment, face_parsing) by cpu
-
 alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
 
@@ -33,8 +31,6 @@ def execute_parsing(img, dst: str):
     '''
     _execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
 
-# TODO(ha4219): #1 FEAT post backbone function
-
 @app.get('/')
 def read_root():
     '''
@@ -43,7 +39,9 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.post('/uploader')
+# TODO(ha4219): #8 FEAT CD by amazon ec2
+
+@app.post('/uploader')  # TODO(ha4219): #7 FEAT Connect cpp lib
 async def uploader(
         front: UploadFile = File(None),
         text: UploadFile = File(None),
