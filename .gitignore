@@ -302,3 +302,6 @@ assets
 models
 
 .vscode
+
+*.bin
+*.png

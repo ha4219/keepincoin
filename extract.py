@@ -1,32 +1,31 @@
-from face_parsing import execute_face_parsing, BiSeNet
-from face_alignment import FaceAlignment, LandmarksType
-import torch
-from pydantic import BaseSettings
+'''
+	extract model shape and weights
+'''
 import os
+import torch
+from config import Settings
+
+from face_parsing import BiSeNet
+from face_alignment import FaceAlignment
 
 
 def extract_model_feature():
-  class Settings(BaseSettings):
-    # TODO DOCKER inject
-    KEEPMODEL: str = "/keepincoin/models"
-    KEEPASSET: str = "/keepincoin/assets"
-    KEEPCUDA: str = "cpu"
+    '''
+		function
+		:parameter {None}: none
+		:return {None}: none
+	'''
+    settings = Settings()
+    alignment = FaceAlignment(3, flip_input=False)
 
-    class Config:
-      env_file = ".env"
+    torch.save(alignment, os.path.join(settings.KEEPMODEL, "face_alignment.pth"))
 
-  settings = Settings()
+    weight_path = "face_parsing/res/cp/79999_iter.pth"
+    parsing = BiSeNet(19)
+    parsing.load_state_dict(torch.load(weight_path, map_location='cpu'))
 
-  alignment = FaceAlignment(LandmarksType._3D, flip_input=False)
-
-  torch.save(alignment, os.path.join(settings.KEEPMODEL, "face_alignment.pth"))
-
-  WEIGHTS_PATH = "face_parsing/res/cp/79999_iter.pth"
-  parsing = BiSeNet(19)
-  parsing.load_state_dict(torch.load(WEIGHTS_PATH, map_location='cpu'))
-
-  torch.save(parsing, os.path.join(settings.KEEPMODEL, 'face_parsing.pth'))
+    torch.save(parsing, os.path.join(settings.KEEPMODEL, 'face_parsing.pth'))
 
 
 if __name__ == '__main__':
-  extract_model_feature()
+    extract_model_feature()
