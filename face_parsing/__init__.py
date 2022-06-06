@@ -1,2 +1,0 @@
-from .face_parsing_model import BiSeNet
-from .face_parsing import execute_face_parsing, _execute_face_parsing

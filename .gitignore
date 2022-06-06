@@ -300,6 +300,7 @@ pip-selfcheck.json
 # custom files
 assets
 models
+libs
 
 .vscode
 
