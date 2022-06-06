@@ -298,11 +298,7 @@ pip-selfcheck.json
 # End of https://www.toptal.com/developers/gitignore/api/python,venv,flask,macos
 
 # custom files
-assets
+static
 models
-libs
 
 .vscode
-
-*.bin
-*.png
