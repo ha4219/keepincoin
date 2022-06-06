@@ -3,10 +3,10 @@
 '''
 import os
 import torch
-from config import Settings
 
-from face_parsing import BiSeNet
-from face_alignment import FaceAlignment
+from app.config import Settings
+from app.face_parsing import BiSeNet
+from app.face_alignment import FaceAlignment
 
 
 def extract_model_feature():
@@ -20,7 +20,7 @@ def extract_model_feature():
 
     torch.save(alignment, os.path.join(settings.KEEPMODEL, "face_alignment.pth"))
 
-    weight_path = "face_parsing/res/cp/79999_iter.pth"
+    weight_path = "app/face_parsing/res/cp/79999_iter.pth"
     parsing = BiSeNet(19)
     parsing.load_state_dict(torch.load(weight_path, map_location='cpu'))
 
