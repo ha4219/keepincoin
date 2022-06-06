@@ -8,13 +8,12 @@ import torch
 import numpy as np
 from PIL import Image
 
-from config import Settings
-from face_parsing.face_parsing import _execute_face_parsing
+from app.config import Settings
+from app.face_parsing.face_parsing import _execute_face_parsing
 
 settings = Settings()
 
 app = FastAPI()
-
 
 alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
@@ -94,10 +93,13 @@ async def uploader(
     '''
     if not front:
         raise HTTPException(status_code=517, detail="front parameter is required.")
-    front = Image.open(io.BytesIO(await front.read()))
-    front_text = Image.open(io.BytesIO(await front_text.read())) if text else 'NONE'
-    back = Image.open(io.BytesIO(await back.read())) if back else 'NONE'
-    back_text = Image.open(io.BytesIO(await back_text.read())) if back_text else 'NONE'
+    front = Image.open(io.BytesIO(await front.read())).convert('RGB')
+    front_text = Image.open(io.BytesIO(await front_text.read())).convert('RGB') \
+        if text else 'NONE'
+    back = Image.open(io.BytesIO(await back.read())).convert('RGB') \
+        if back else 'NONE'
+    back_text = Image.open(io.BytesIO(await back_text.read())).convert('RGB') \
+        if back_text else 'NONE'
 
     try:
         execute_alignment(front, "test.bin")
