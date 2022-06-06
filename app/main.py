@@ -133,10 +133,10 @@ async def uploader(
     ])
 
     return {
-        'style': style, 
-        'shape': shape, 
-        'border': border, 
-        'embo': embo, 
-        'emboline': emboline, 
+        'style': style,
+        'shape': shape,
+        'border': border,
+        'embo': embo,
+        'emboline': emboline,
         'result': f'{settings.KEEPASSET}/res.stl'
     }
