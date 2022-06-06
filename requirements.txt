@@ -12,7 +12,7 @@ importlib-metadata==4.11.4
 keras==2.9.0
 networkx==2.6.3
 numpy==1.21.6
-opencv-python==4.5.5.64
+opencv-python
 packaging==21.3
 Pillow==9.1.1
 pydantic==1.9.1
