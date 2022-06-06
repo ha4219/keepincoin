@@ -3,23 +3,23 @@ main fastapi
 '''
 import os
 import io
+import ctypes
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 import torch
 import numpy as np
 from PIL import Image
 
-from config import Settings
-from face_parsing.face_parsing import _execute_face_parsing
+from app.config import Settings
+from app.face_parsing.face_parsing import _execute_face_parsing
+from app.coin_generator.generator import generate_coin
 
 settings = Settings()
 
 app = FastAPI()
 
-
-# TODO(ha4219): #2 FEAT connect torch model(face_alignment, face_parsing) by cpu
-
 alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
+lib = ctypes.cdll.LoadLibrary(os.path.join(settings.KEEPMODEL, 'lib_mac.so'))
 
 def execute_alignment(img, dst: str):
     '''
@@ -32,8 +32,6 @@ def execute_parsing(img, dst: str):
     run parsing
     '''
     _execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
-
-# TODO(ha4219): #1 FEAT post backbone function
 
 @app.get('/')
 def read_root():
@@ -98,19 +96,47 @@ async def uploader(
     '''
     if not front:
         raise HTTPException(status_code=517, detail="front parameter is required.")
-    front = Image.open(io.BytesIO(await front.read()))
-    front_text = Image.open(io.BytesIO(await front_text.read())) if text else 'NONE'
-    back = Image.open(io.BytesIO(await back.read())) if back else 'NONE'
-    back_text = Image.open(io.BytesIO(await back_text.read())) if back_text else 'NONE'
+    front = Image.open(io.BytesIO(await front.read())).convert('RGB').resize((512, 512))
+    front_text = Image.open(io.BytesIO(await front_text.read())).convert('RGB').resize((512, 512)) \
+        if text else None
+    back = Image.open(io.BytesIO(await back.read())).convert('RGB').resize((512, 512)) \
+        if back else None
+    back_text = Image.open(io.BytesIO(await back_text.read())).convert('RGB').resize((512, 512)) \
+        if back_text else None
 
     try:
-        execute_alignment(front, "test.bin")
+        execute_alignment(front, f'{settings.KEEPASSET}/test.bin')
     except Exception as exc:
         raise HTTPException(status_code=518, detail="alignment error") from exc
     try:
-        execute_parsing(front, "test.png")
+        execute_parsing(front, f'{settings.KEEPASSET}/test.png')
     except Exception as exc:
         raise HTTPException(status_code=519, detail="parsing error") from exc
 
+    if front:
+        front.save(f'{settings.KEEPASSET}/front.png')
+    if front_text:
+        front_text.save(f'{settings.KEEPASSET}/front_text.png')
+    if back:
+        back.save(f'{settings.KEEPASSET}/back.png')
+    if back_text:
+        back_text.save(f'{settings.KEEPASSET}/back_text.png')
 
-    return {'style': style, 'shape': shape, 'border': border, 'embo': embo, 'emboline': emboline}
+    generate_coin(lib, [
+        "",
+        f'{settings.KEEPASSET}/front.png',
+        "NONE",
+        "NONE",
+        f'{settings.KEEPASSET}/front_text.png' if front_text else f'{settings.KEEPASSET}/BLACK.png',
+        f'{settings.KEEPASSET}/res.stl',
+        f'{settings.KEEPASSET}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
+    ])
+
+    return {
+        'style': style,
+        'shape': shape,
+        'border': border,
+        'embo': embo,
+        'emboline': emboline,
+        'result': f'{settings.KEEPASSET}/res.stl'
+    }

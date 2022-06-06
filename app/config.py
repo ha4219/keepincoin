@@ -4,7 +4,7 @@ settings
 from pydantic import BaseSettings
 
 
-class Settings(BaseSettings):   #TODO(ha4219): DOCKER inject
+class Settings(BaseSettings):
     '''
     init setting
     '''
