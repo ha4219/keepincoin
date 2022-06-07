@@ -300,6 +300,8 @@ pip-selfcheck.json
 # custom files
 static
 models
+trash
+nginx
 
 .vscode
 
