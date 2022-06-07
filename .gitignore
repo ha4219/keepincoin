@@ -302,3 +302,5 @@ static
 models
 
 .vscode
+
+res*.png

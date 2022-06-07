@@ -34,7 +34,7 @@ def execute_parsing(img, dst: str):
     _execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
 
 @app.get('/')
-def read_root():
+async def read_root():
     '''
     url / test
     '''
