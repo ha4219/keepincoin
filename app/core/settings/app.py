@@ -7,7 +7,3 @@ class AppSettings(BaseAppSettings):
     '''
         app settings
     '''
-    os: str
-
-    def __init__(self):
-        print(self.KEEPMODEL)
