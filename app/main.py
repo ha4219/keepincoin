@@ -1,6 +1,6 @@
-'''
+"""
 main fastapi
-'''
+"""
 import os
 import io
 import ctypes
@@ -54,7 +54,7 @@ async def uploader(
         embo: bool = Form(False),
         emboline: bool = Form(False),
 	):
-    '''
+    """
     basic logic
 
     Parameters
@@ -94,7 +94,7 @@ async def uploader(
     -----------
         res: json
         return saved path
-    '''
+    """
     if not front:
         raise HTTPException(status_code=517, detail="front parameter is required.")
     front = Image.open(io.BytesIO(await front.read())).convert('RGB').resize((512, 512))
