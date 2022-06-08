@@ -41,9 +41,8 @@ async def read_root():
     return {"Hello": "World"}
 
 
-# TODO(ha4219): #8 FEAT CD by amazon ec2
 
-@app.post('/uploader')  # TODO(ha4219): #7 FEAT Connect cpp lib
+@app.post('/uploader')
 async def uploader(
         front: UploadFile = File(None),
         text: UploadFile = File(None),

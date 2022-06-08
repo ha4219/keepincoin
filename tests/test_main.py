@@ -33,18 +33,20 @@ def test_uploader_front_no_face():
     '''
         test uploader no face
     '''
-    response = client.post(
-        '/uploader',
-        files={"front": ("assets/BLACK.png", open('assets/BLACK.png', 'rb'), "image/jpeg")}
-    )
-    assert response.status_code == 518
+    with open('assets/BLACK.png', 'rb') as image:
+        response = client.post(
+            '/uploader',
+            files={"front": ("assets/BLACK.png", image, "image/jpeg")}
+        )
+        assert response.status_code == 518
 
 def test_uploader_front_success():
     '''
-        test uploader no face
+        test uploader success
     '''
-    response = client.post(
-        '/uploader',
-        files={"front": ("assets/test.png", open('assets/test.png', 'rb'), "image/jpeg")}
-    )
-    assert response.status_code == 200 
+    with open('assets/test.png', 'rb') as image:
+        response = client.post(
+            '/uploader',
+            files={"front": ("assets/test.png", image, "image/jpeg")}
+        )
+        assert response.status_code == 200
