@@ -12,6 +12,7 @@ from PIL import Image
 from app.config import Settings
 from app.face_parsing.face_parsing import _execute_face_parsing
 from app.coin_generator.generator import generate_coin
+from app.path_util import now_to_str
 
 settings = Settings()
 
@@ -105,39 +106,46 @@ async def uploader(
     back_text = Image.open(io.BytesIO(await back_text.read())).convert('RGB').resize((512, 512)) \
         if back_text else None
 
+    now = now_to_str()
+    res_path = f"{settings.KEEPSTATIC}/{now}"
+    os.mkdir(res_path)
+
     try:
-        execute_alignment(front, f'{settings.KEEPSTATIC}/test.bin')
+        execute_alignment(front, f'{res_path}/test.bin')
     except Exception as exc:
         raise HTTPException(status_code=518, detail="alignment error") from exc
     try:
-        execute_parsing(front, f'{settings.KEEPSTATIC}/test.png')
+        execute_parsing(front, f'{res_path}/test.png')
     except Exception as exc:
         raise HTTPException(status_code=519, detail="parsing error") from exc
 
     if front:
-        front.save(f'{settings.KEEPSTATIC}/front.png')
+        front.save(f'{res_path}/front.png')
     if front_text:
-        front_text.save(f'{settings.KEEPSTATIC}/front_text.png')
+        front_text.save(f'{res_path}/front_text.png')
     if back:
-        back.save(f'{settings.KEEPSTATIC}/back.png')
+        back.save(f'{res_path}/back.png')
     if back_text:
-        back_text.save(f'{settings.KEEPSTATIC}/back_text.png')
+        back_text.save(f'{res_path}/back_text.png')
 
     generate_coin(lib, [
         "",
-        f'{settings.KEEPSTATIC}/front.png',
+        f'{res_path}/front.png',
         "NONE",
         "NONE",
-        f'{settings.KEEPSTATIC}/front_text.png' if front_text else f'{settings.KEEPASSET}/BLACK.png',
-        f'{settings.KEEPSTATIC}/res.stl',
-        f'{settings.KEEPSTATIC}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
+        f'{res_path}/front_text.png' if front_text else f'{settings.KEEPASSET}/BLACK.png',
+        f'{res_path}/coin.stl',
+        f'{res_path}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
     ])
 
     return {
-        'style': style,
-        'shape': shape,
-        'border': border,
-        'embo': embo,
-        'emboline': emboline,
-        'result': f'{settings.KEEPSTATIC}/res.stl'
+        "front_image_path": f"/assets/{now}/front.png",
+        "face_alignment_dst_path": f"/assets/{now}/test.png",
+        "face_parsing_dst_path": f"/assets/{now}/test.bin",
+        "coin_dst_path": f"/assets/{now}/coin.stl",
+        "style": style,
+        "shape": shape,
+        "border": border,
+        "embo": embo,
+        "emboline": emboline,
     }

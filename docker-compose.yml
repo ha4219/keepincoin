@@ -4,7 +4,7 @@ services:
     image: 
       nginx:latest
     ports:
-      - "80:80"
+      - "35000:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf

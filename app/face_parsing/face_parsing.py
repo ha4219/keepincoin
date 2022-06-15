@@ -1,10 +1,6 @@
 #!/usr/bin/python
 # -*- encoding: utf-8 -*-
 
-from .logger import setup_logger
-from .face_parsing_model import BiSeNet
-from .face_dataset import FaceMask
-
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -20,6 +16,10 @@ import math
 from PIL import Image
 import torchvision.transforms as transforms
 import cv2
+
+from .logger import setup_logger
+from .face_parsing_model import BiSeNet
+from .face_dataset import FaceMask
 
 def vis_parsing_maps(im, parsing_anno, stride, save_im=False, save_path='vis_results/parsing_map_on_im.jpg'):
     # Colors for all 20 parts
