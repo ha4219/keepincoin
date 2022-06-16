@@ -99,7 +99,7 @@ async def uploader(
     if not front:
         raise HTTPException(status_code=517, detail="front parameter is required.")
     front = Image.open(io.BytesIO(await front.read())).convert('RGB').resize((512, 512))
-    front_text = Image.open(io.BytesIO(await front_text.read())).convert('RGB').resize((512, 512)) \
+    front_text = Image.open(io.BytesIO(await text.read())).convert('RGB').resize((512, 512)) \
         if text else None
     back = Image.open(io.BytesIO(await back.read())).convert('RGB').resize((512, 512)) \
         if back else None
