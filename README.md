@@ -7,6 +7,6 @@
 
 
 ## TODO
-- [] ssl 적용
-- [] cpp code to sp file
-- [] edit config depended on runtime
+- [ ] ssl 적용
+- [ ] cpp code to sp file
+- [ ] edit config depended on runtime
