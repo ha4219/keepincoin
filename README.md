@@ -9,5 +9,5 @@
 ## TODO
 - [x] previous...
 - [ ] ssl 적용
-- [ ] cpp code to sp file
+- [ ] cpp code to so file
 - [ ] edit config depended on runtime
