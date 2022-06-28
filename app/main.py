@@ -140,6 +140,7 @@ async def uploader(
 
     return {
         "front_image_path": f"/assets/{now}/front.png",
+        "back_image_path": f"/assets/{now}/back.png" if back else None,
         "face_alignment_dst_path": f"/assets/{now}/test.png",
         "face_parsing_dst_path": f"/assets/{now}/test.bin",
         "coin_dst_path": f"/assets/{now}/coin.stl",
