@@ -108,14 +108,16 @@ async def uploader(
 
     now = now_to_str()
     res_path = f"{settings.KEEPSTATIC}/{now}"
+    coin_path = f"{res_path}/coins"
     os.mkdir(res_path)
+    os.mkdir(coin_path)
 
     try:
-        execute_alignment(front, f'{res_path}/test.bin')
+        execute_alignment(front, f'{res_path}/alignment.bin')
     except Exception as exc:
         raise HTTPException(status_code=518, detail="alignment error") from exc
     try:
-        execute_parsing(front, f'{res_path}/test.png')
+        execute_parsing(front, f'{res_path}/parsing.png')
     except Exception as exc:
         raise HTTPException(status_code=519, detail="parsing error") from exc
 
@@ -128,22 +130,52 @@ async def uploader(
     if back_text:
         back_text.save(f'{res_path}/back_text.png')
 
-    generate_coin(lib, [
-        "",
-        f'{res_path}/front.png',
-        "NONE",
-        "NONE",
-        f'{res_path}/front_text.png' if front_text else f'{settings.KEEPASSET}/BLACK.png',
-        f'{res_path}/coin.stl',
-        f'{res_path}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
-    ])
+    try:
+        generate_coin(lib, [
+            "",
+            f'{res_path}/front.png',
+            f'{res_path}/alignment.bin',
+            f'{res_path}/parsing.png',
+            f'{res_path}/front_text.png' if front_text else f'{settings.KEEPASSET}/BLACK.png',
+            f'{coin_path}/coin',
+            f'{res_path}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
+            f'{res_path}/back_text.png' if back_text else f'{settings.KEEPASSET}/BLACK.png',
+        ])
+    except Exception as exc:
+        raise HTTPException(status_code=520, detail=f"generate_coin error, {exc}") from exc
+
 
     return {
         "front_image_path": f"/assets/{now}/front.png",
         "back_image_path": f"/assets/{now}/back.png" if back else None,
-        "face_alignment_dst_path": f"/assets/{now}/test.png",
-        "face_parsing_dst_path": f"/assets/{now}/test.bin",
-        "coin_dst_path": f"/assets/{now}/coin.stl",
+        "face_alignment_dst_path": f"/assets/{now}/alignment.bin",
+        "face_parsing_dst_path": f"/assets/{now}/parsing.png",
+        "coin_dst_path": {
+            "12_dual_margin" : f"/assets/{now}/coins/coin_12_dual_margin.stl",
+            "12_dual" : f"/assets/{now}/coins/coin_12_dual.stl",
+            "12_margin" : f"/assets/{now}/coins/coin_12_margin.stl",
+            "12" : f"/assets/{now}/coins/coin_12.stl",
+
+            "15_dual_margin" : f"/assets/{now}/coins/coin_15_dual_margin.stl",
+            "15_dual" : f"/assets/{now}/coins/coin_15_dual.stl",
+            "15_margin" : f"/assets/{now}/coins/coin_15_margin.stl",
+            "15" : f"/assets/{now}/coins/coin_15.stl",
+
+            "18_dual_margin" : f"/assets/{now}/coins/coin_18_dual_margin.stl",
+            "18_dual" : f"/assets/{now}/coins/coin_18_dual.stl",
+            "18_margin" : f"/assets/{now}/coins/coin_18_margin.stl",
+            "18" : f"/assets/{now}/coins/coin_18.stl",
+
+            "21_dual_margin" : f"/assets/{now}/coins/coin_21_dual_margin.stl",
+            "21_dual" : f"/assets/{now}/coins/coin_21_dual.stl",
+            "21_margin" : f"/assets/{now}/coins/coin_21_margin.stl",
+            "21" : f"/assets/{now}/coins/coin_21.stl",
+
+            "24_dual_margin" : f"/assets/{now}/coins/coin_24_dual_margin.stl",
+            "24_dual" : f"/assets/{now}/coins/coin_24_dual.stl",
+            "24_margin" : f"/assets/{now}/coins/coin_24_margin.stl",
+            "24" : f"/assets/{now}/coins/coin_24.stl",
+        },
         "style": style,
         "shape": shape,
         "border": border,
