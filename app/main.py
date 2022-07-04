@@ -134,8 +134,8 @@ async def uploader(
         generate_coin(lib, [
             "",
             f'{res_path}/front.png',
-            f'{res_path}/alignment.bin',
             f'{res_path}/parsing.png',
+            f'{res_path}/alignment.bin',
             f'{res_path}/front_text.png' if front_text else f'{settings.KEEPASSET}/BLACK.png',
             f'{coin_path}/coin',
             f'{res_path}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
