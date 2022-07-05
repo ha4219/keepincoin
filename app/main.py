@@ -93,8 +93,34 @@ async def uploader(
             false(추가하지않음) - default
     Return
     -----------
-        res: json
-        return saved path
+        "front_image_path": 앞면 이미지 파일 위치,
+        "back_image_path": 뒷면 이미지 파일 위치 없을 경우 null,
+        "coin_dst_path": { coin 위치 path, naming_rule: size_options..., 아래는 예시입니다.
+            "12_dual_margin" : f"/assets/{now}/coins/coin_12_dual_margin.stl",
+            "12_dual" : f"/assets/{now}/coins/coin_12_dual.stl",
+            "12_margin" : f"/assets/{now}/coins/coin_12_margin.stl",
+            "12" : f"/assets/{now}/coins/coin_12.stl",
+
+            "15_dual_margin" : f"/assets/{now}/coins/coin_15_dual_margin.stl",
+            "15_dual" : f"/assets/{now}/coins/coin_15_dual.stl",
+            "15_margin" : f"/assets/{now}/coins/coin_15_margin.stl",
+            "15" : f"/assets/{now}/coins/coin_15.stl",
+
+            "18_dual_margin" : f"/assets/{now}/coins/coin_18_dual_margin.stl",
+            "18_dual" : f"/assets/{now}/coins/coin_18_dual.stl",
+            "18_margin" : f"/assets/{now}/coins/coin_18_margin.stl",
+            "18" : f"/assets/{now}/coins/coin_18.stl",
+
+            "21_dual_margin" : f"/assets/{now}/coins/coin_21_dual_margin.stl",
+            "21_dual" : f"/assets/{now}/coins/coin_21_dual.stl",
+            "21_margin" : f"/assets/{now}/coins/coin_21_margin.stl",
+            "21" : f"/assets/{now}/coins/coin_21.stl",
+
+            "24_dual_margin" : f"/assets/{now}/coins/coin_24_dual_margin.stl",
+            "24_dual" : f"/assets/{now}/coins/coin_24_dual.stl",
+            "24_margin" : f"/assets/{now}/coins/coin_24_margin.stl",
+            "24" : f"/assets/{now}/coins/coin_24.stl",
+        }
     """
     if not front:
         raise HTTPException(status_code=517, detail="front parameter is required.")
