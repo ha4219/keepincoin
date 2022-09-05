@@ -6,7 +6,7 @@ import platform
 import io
 import ctypes
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 import torch
 import numpy as np
 from PIL import Image
