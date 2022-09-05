@@ -20,13 +20,13 @@ settings = Settings()
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=['*'],
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*'],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=['*'],
+#     allow_credentials=True,
+#     allow_methods=['*'],
+#     allow_headers=['*'],
+# )
 
 mapping = {
     'Windows': '',
@@ -55,7 +55,7 @@ async def read_root():
     '''
     url / test
     '''
-    return {"version": "0.0.33"}
+    return {"version": "0.0.34"}
 
 
 
