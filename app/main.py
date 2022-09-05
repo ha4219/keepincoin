@@ -55,7 +55,7 @@ async def read_root():
     '''
     url / test
     '''
-    return {"version": "0.0.32"}
+    return {"version": "0.0.33"}
 
 
 

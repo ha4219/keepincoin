@@ -9,8 +9,7 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./trash:/keepincoin/static
-      - ./access.log:/var/log/nginx/access.log
-      - ./error.log:/var/log/nginx/error.log
+      - ./nginx_log:/var/log/nginx
     depends_on:
       - fastapi
   fastapi:
