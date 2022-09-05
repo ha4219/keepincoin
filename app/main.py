@@ -6,6 +6,7 @@ import platform
 import io
 import ctypes
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import torch
 import numpy as np
 from PIL import Image
@@ -18,6 +19,14 @@ from app.path_util import now_to_str
 settings = Settings()
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 mapping = {
     'Windows': '',
