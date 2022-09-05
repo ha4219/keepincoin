@@ -1,0 +1,33 @@
+version: '3'
+services:
+  nginx:
+    image: 
+      nginx:latest
+    ports:
+      - "35000:80"
+      - "38443:81"
+    volumes:
+      - ./nginx/default.test.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./trash:/keepincoin/static
+    depends_on:
+      - fastapi
+      - fastapi-test
+  fastapi:
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile
+    image: ha4219/keepincoin:0.0.23
+    container_name: fastapi
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --timeout=300
+    volumes:
+      - ./trash:/keepincoin/static
+  fastapi-test:
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile
+    image: ha4219/keepincoin:0.0.30
+    container_name: fastapi-test
+    command: gunicorn app.main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --timeout=300
+    volumes:
+      - ./trash:/keepincoin/static

@@ -2,6 +2,7 @@
 main fastapi
 """
 import os
+import platform
 import io
 import ctypes
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
@@ -18,9 +19,15 @@ settings = Settings()
 
 app = FastAPI()
 
+mapping = {
+    'Windows': '',
+    'Linux': 'lib_ubuntu.so',
+    'Darwin': 'lib_mac.so'
+}
+
 alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
-lib = ctypes.cdll.LoadLibrary(os.path.join(settings.KEEPMODEL, 'lib_ubuntu.so'))
+lib = ctypes.cdll.LoadLibrary(os.path.join(settings.KEEPMODEL, mapping[platform.system()]))
 
 def execute_alignment(img, dst: str):
     '''
@@ -39,7 +46,7 @@ async def read_root():
     '''
     url / test
     '''
-    return {"Hello": "World"}
+    return {"version": "0.0.32"}
 
 
 
@@ -162,10 +169,10 @@ async def uploader(
             f'{res_path}/front.png',
             f'{res_path}/parsing.png',
             f'{res_path}/alignment.bin',
-            f'{res_path}/front_text.png' if front_text else f'{settings.KEEPASSET}/BLACK.png',
+            f'{res_path}/front_text.png' if front_text else f'{settings.KEEPASSET}/WHITE.png',
             f'{coin_path}/coin',
             f'{res_path}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
-            f'{res_path}/back_text.png' if back_text else f'{settings.KEEPASSET}/BLACK.png',
+            f'{res_path}/back_text.png' if back_text else f'{settings.KEEPASSET}/WHITE.png',
         ])
     except Exception as exc:
         raise HTTPException(status_code=520, detail=f"generate_coin error, {exc}") from exc

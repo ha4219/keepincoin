@@ -306,3 +306,6 @@ nginx
 .vscode
 
 res*.png
+
+*.tar
+*.pth
