@@ -309,3 +309,5 @@ res*.png
 
 *.tar
 *.pth
+
+*.stl

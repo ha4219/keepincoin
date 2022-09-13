@@ -1,6 +1,7 @@
 """
 main fastapi
 """
+from enum import Enum, unique
 import os
 import platform
 import io
@@ -34,6 +35,16 @@ mapping = {
     'Darwin': 'lib_mac.so'
 }
 
+@unique
+class Border(str, Enum):
+    '''
+        border category
+    '''
+    BASIC = "basic"
+    BALLS = "balls"
+    CURVED = "curved"
+    TWISTED = "twisted"
+
 alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
 lib = ctypes.cdll.LoadLibrary(os.path.join(settings.KEEPMODEL, mapping[platform.system()]))
@@ -55,9 +66,7 @@ async def read_root():
     '''
     url / test
     '''
-    return {"version": "0.0.34"}
-
-
+    return {"version": "0.0.35"}
 
 @app.post('/uploader')
 async def uploader(
@@ -67,7 +76,7 @@ async def uploader(
         back_text: UploadFile = File(None),
         style: str = Form("chram"),
         shape: str = Form("circle"),
-        border: str = Form("basic"),
+        border: Border = Form("basic"),
         embo: bool = Form(False),
         emboline: bool = Form(False),
 	):
@@ -76,7 +85,7 @@ async def uploader(
 
     Parameters
     -----------
-        front: UploadFile
+        front: UploadFile - Required
             앞면 이미지
         text: UploadFile
             앞면 텍스트 파일
@@ -93,11 +102,11 @@ async def uploader(
             ellipse(타원)
             octagon(팔각)
 
-        border: str
+        *border: str - Required*
             basic(기본) - default
-            bead(구슬)
-            twist(꽈배기)
-            curve(굴곡)
+            balls(구슬)
+            twisted(꽈배기)
+            curved(굴곡)
 
         embo: str
             true(엠보)
@@ -112,30 +121,14 @@ async def uploader(
         "front_image_path": 앞면 이미지 파일 위치,
         "back_image_path": 뒷면 이미지 파일 위치 없을 경우 null,
         "coin_dst_path": { coin 위치 path, naming_rule: size_options..., 아래는 예시입니다.
-            "12_dual_margin" : f"/assets/{now}/coins/coin_12_dual_margin.stl",
-            "12_dual" : f"/assets/{now}/coins/coin_12_dual.stl",
-            "12_margin" : f"/assets/{now}/coins/coin_12_margin.stl",
-            "12" : f"/assets/{now}/coins/coin_12.stl",
+            "15_dual" : f"/assets/{now}/coins/coin_15_{border}_dual.stl",
+            "15" : f"/assets/{now}/coins/coin_15_{border}.stl",
 
-            "15_dual_margin" : f"/assets/{now}/coins/coin_15_dual_margin.stl",
-            "15_dual" : f"/assets/{now}/coins/coin_15_dual.stl",
-            "15_margin" : f"/assets/{now}/coins/coin_15_margin.stl",
-            "15" : f"/assets/{now}/coins/coin_15.stl",
+            "18_dual" : f"/assets/{now}/coins/coin_18_{border}_dual.stl",
+            "18" : f"/assets/{now}/coins/coin_18_{border}.stl",
 
-            "18_dual_margin" : f"/assets/{now}/coins/coin_18_dual_margin.stl",
-            "18_dual" : f"/assets/{now}/coins/coin_18_dual.stl",
-            "18_margin" : f"/assets/{now}/coins/coin_18_margin.stl",
-            "18" : f"/assets/{now}/coins/coin_18.stl",
-
-            "21_dual_margin" : f"/assets/{now}/coins/coin_21_dual_margin.stl",
-            "21_dual" : f"/assets/{now}/coins/coin_21_dual.stl",
-            "21_margin" : f"/assets/{now}/coins/coin_21_margin.stl",
-            "21" : f"/assets/{now}/coins/coin_21.stl",
-
-            "24_dual_margin" : f"/assets/{now}/coins/coin_24_dual_margin.stl",
-            "24_dual" : f"/assets/{now}/coins/coin_24_dual.stl",
-            "24_margin" : f"/assets/{now}/coins/coin_24_margin.stl",
-            "24" : f"/assets/{now}/coins/coin_24.stl",
+            "21_dual" : f"/assets/{now}/coins/coin_21_{border}_dual.stl",
+            "21" : f"/assets/{now}/coins/coin_21_{border}.stl",
         }
     """
     if not front:
@@ -182,6 +175,7 @@ async def uploader(
             f'{coin_path}/coin',
             f'{res_path}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
             f'{res_path}/back_text.png' if back_text else f'{settings.KEEPASSET}/WHITE.png',
+            border.upper(),
         ])
     except Exception as exc:
         raise HTTPException(status_code=520, detail=f"generate_coin error, {exc}") from exc
@@ -193,30 +187,14 @@ async def uploader(
         "face_alignment_dst_path": f"/assets/{now}/alignment.bin",
         "face_parsing_dst_path": f"/assets/{now}/parsing.png",
         "coin_dst_path": {
-            "12_dual_margin" : f"/assets/{now}/coins/coin_12_dual_margin.stl",
-            "12_dual" : f"/assets/{now}/coins/coin_12_dual.stl",
-            "12_margin" : f"/assets/{now}/coins/coin_12_margin.stl",
-            "12" : f"/assets/{now}/coins/coin_12.stl",
+            "15_dual" : f"/assets/{now}/coins/coin_15_{border}_dual.stl",
+            "15" : f"/assets/{now}/coins/coin_15_{border}.stl",
 
-            "15_dual_margin" : f"/assets/{now}/coins/coin_15_dual_margin.stl",
-            "15_dual" : f"/assets/{now}/coins/coin_15_dual.stl",
-            "15_margin" : f"/assets/{now}/coins/coin_15_margin.stl",
-            "15" : f"/assets/{now}/coins/coin_15.stl",
+            "18_dual" : f"/assets/{now}/coins/coin_18_{border}_dual.stl",
+            "18" : f"/assets/{now}/coins/coin_18_{border}.stl",
 
-            "18_dual_margin" : f"/assets/{now}/coins/coin_18_dual_margin.stl",
-            "18_dual" : f"/assets/{now}/coins/coin_18_dual.stl",
-            "18_margin" : f"/assets/{now}/coins/coin_18_margin.stl",
-            "18" : f"/assets/{now}/coins/coin_18.stl",
-
-            "21_dual_margin" : f"/assets/{now}/coins/coin_21_dual_margin.stl",
-            "21_dual" : f"/assets/{now}/coins/coin_21_dual.stl",
-            "21_margin" : f"/assets/{now}/coins/coin_21_margin.stl",
-            "21" : f"/assets/{now}/coins/coin_21.stl",
-
-            "24_dual_margin" : f"/assets/{now}/coins/coin_24_dual_margin.stl",
-            "24_dual" : f"/assets/{now}/coins/coin_24_dual.stl",
-            "24_margin" : f"/assets/{now}/coins/coin_24_margin.stl",
-            "24" : f"/assets/{now}/coins/coin_24.stl",
+            "21_dual" : f"/assets/{now}/coins/coin_21_{border}_dual.stl",
+            "21" : f"/assets/{now}/coins/coin_21_{border}.stl",
         },
         "style": style,
         "shape": shape,
