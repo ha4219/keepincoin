@@ -66,7 +66,7 @@ async def read_root():
     '''
     url / test
     '''
-    return {"version": "0.0.36"}
+    return {"version": "0.0.37"}
 
 @app.post('/uploader')
 async def uploader(

@@ -8,6 +8,8 @@ WORKDIR /code
 
 COPY ./models /keepincoin/models
 COPY ./assets /keepincoin/assets
+COPY ./assets /code/assets
+
 
 RUN mkdir /keepincoin/static
 
