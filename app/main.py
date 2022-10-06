@@ -17,6 +17,7 @@ from app.face_parsing.face_parsing import _execute_face_parsing
 from app.coin_generator.generator import generate_coin
 from app.path_util import now_to_str
 
+
 settings = Settings()
 
 app = FastAPI()
@@ -66,7 +67,7 @@ async def read_root():
     '''
     url / test
     '''
-    return {"version": "0.0.38"}
+    return {"version": "0.0.39", "updatedAt": "Thu Oct 06 2022 19:57:05 GMT+0900 (Korean Standard Time)"}
 
 @app.post('/uploader')
 async def uploader(
