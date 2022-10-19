@@ -1,5 +1,5 @@
 # TODO(ha4219): #10 create dockerfile
-FROM dkimg/opencv:4.4.0-debian
+FROM opencvcourses/opencv-docker:4.4.0
 
 EXPOSE 8000
 
