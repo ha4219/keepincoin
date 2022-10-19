@@ -67,7 +67,7 @@ async def read_root():
     '''
     url / test
     '''
-    return {"version": "0.0.40", "updatedAt": "Wed Oct 19 2022 16:00:38 GMT+0900 (Korean Standard Time)"}
+    return {"version": "0.0.41", "updatedAt": "Thu Oct 20 2022 00:10:41 GMT+0900 (Korean Standard Time)"}
 
 @app.post('/uploader')
 async def uploader(
