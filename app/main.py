@@ -46,6 +46,14 @@ class Border(str, Enum):
     CURVED = "curved"
     TWISTED = "twisted"
 
+@unique
+class ImgType(str, Enum):
+    '''
+        img type
+    '''
+    IMAGE = 'image'
+    ILLUST = 'illust'
+
 alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
 lib = ctypes.cdll.LoadLibrary(os.path.join(settings.KEEPMODEL, mapping[platform.system()]))
@@ -67,7 +75,10 @@ async def read_root():
     '''
     url / test
     '''
-    return {"version": "0.0.41", "updatedAt": "Thu Oct 20 2022 00:10:41 GMT+0900 (Korean Standard Time)"}
+    return {
+        "version": "0.0.42",
+        "updatedAt": "Wed Oct 26 2022 20:51:47 GMT+0900 (Korean Standard Time)"
+    }
 
 @app.post('/uploader')
 async def uploader(
@@ -80,6 +91,7 @@ async def uploader(
         border: Border = Form("basic"),
         embo: bool = Form(False),
         emboline: bool = Form(False),
+        img_type: ImgType = Form("image"),
 	):
     """
     basic logic
@@ -177,6 +189,7 @@ async def uploader(
             f'{res_path}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
             f'{res_path}/back_text.png' if back_text else f'{settings.KEEPASSET}/WHITE.png',
             border.upper(),
+            img_type.upper(),
         ])
     except Exception as exc:
         raise HTTPException(status_code=520, detail=f"generate_coin error, {exc}") from exc
