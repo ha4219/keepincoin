@@ -89,8 +89,8 @@ async def uploader(
         style: str = Form("chram"),
         shape: str = Form("circle"),
         border: Border = Form("basic"),
-        embo: bool = Form(False),
-        emboline: bool = Form(False),
+        # embo: bool = Form(False),
+        # emboline: bool = Form(False),
         img_type: ImgType = Form("image"),
         is_pad_front: bool = Form(False),
         is_pad_back: bool = Form(False),
@@ -135,17 +135,17 @@ async def uploader(
         *img_type: str - Required*
             image - default
             illust
-        
+
         is_pad_front: bool
             앞면 테두리쪽 여백 여부
             false - default
             true
-        
+
         is_pad_back: bool
             뒷면 테두리쪽 여백 여부
             false - default
             true
-        
+
     Return
     -----------
         "front_image_path": 앞면 이미지 파일 위치,
@@ -232,6 +232,6 @@ async def uploader(
         "style": style,
         "shape": shape,
         "border": border,
-        "embo": embo,
-        "emboline": emboline,
+        # "embo": embo,
+        # "emboline": emboline,
     }
