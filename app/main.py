@@ -51,13 +51,13 @@ class Border(str, Enum):
     CURVED = "curved"
     TWISTED = "twisted"
 
-@unique
-class ImgType(str, Enum):
-    '''
-        img type
-    '''
-    IMAGE = 'image'
-    ILLUST = 'illust'
+# @unique
+# class ImgType(str, Enum):
+#     '''
+#         img type
+#     '''
+#     IMAGE = 'image'
+#     ILLUST = 'illust'
 
 alignment = torch.load(os.path.join(settings.KEEPMODEL, 'face_alignment.pth'))
 parsing = torch.load(os.path.join(settings.KEEPMODEL, 'face_parsing.pth')).to(settings.KEEPCUDA)
@@ -75,15 +75,14 @@ def execute_parsing(img, dst: str):
     '''
     _execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
 
-# @app.get('/')
-# async def read_root():
-#     '''
-#     url / test
-#     '''
-#     return {
-#         "version": "0.0.43",
-#         "updatedAt": "Fri Dec 09 2022 15:27:28 GMT+0900"
-#     }
+@app.get('/')
+async def read_root():
+    '''
+    url / test
+    '''
+    return {
+        "version": VERSION
+    }
 
 @app.post('/uploader')
 async def uploader(
@@ -91,12 +90,7 @@ async def uploader(
         text: UploadFile = File(None),
         back: UploadFile = File(None),
         back_text: UploadFile = File(None),
-        style: str = Form("chram"),
-        shape: str = Form("circle"),
         border: Border = Form("basic"),
-        # embo: bool = Form(False),
-        # emboline: bool = Form(False),
-        img_type: ImgType = Form("image"),
         is_pad_front: bool = Form(False),
         is_pad_back: bool = Form(False),
 	):
@@ -113,39 +107,15 @@ async def uploader(
             뒷면 이미지
         back_text: UploadFile
             뒷면 텍스트 파일
-        style: str
-            charm(참) - default
-            frame(프레임)
-        shape: str
-            circle(원형) - default
-            square(사각)
-            ellipse(타원)
-            octagon(팔각)
-
         *border: str - Required*
             basic(기본) - default
             balls(구슬)
             twisted(꽈배기)
             curved(굴곡)
-
-        embo: str
-            true(엠보)
-            false(민자) - default
-
-        emboline: str
-            엠보라인 - 기본배경*embo-false시에 추가가능
-            true(추가)
-            false(추가하지않음) - default
-
-        *img_type: str - Required*
-            image - default
-            illust
-
         is_pad_front: bool
             앞면 테두리쪽 여백 여부
             false - default
             true
-
         is_pad_back: bool
             뒷면 테두리쪽 여백 여부
             false - default
@@ -211,7 +181,6 @@ async def uploader(
             f'{res_path}/back.png' if back else f'{settings.KEEPASSET}/WHITE.png',
             f'{res_path}/back_text.png' if back_text else f'{settings.KEEPASSET}/WHITE.png',
             border.upper(),
-            img_type.upper(),
             "MARGIN" if is_pad_front else "NONE",
             "MARGIN" if is_pad_back else "NONE",
         ])
@@ -222,8 +191,8 @@ async def uploader(
     return {
         "front_image_path": f"/assets/{now}/front.png",
         "back_image_path": f"/assets/{now}/back.png" if back else None,
-        "face_alignment_dst_path": f"/assets/{now}/alignment.bin",
-        "face_parsing_dst_path": f"/assets/{now}/parsing.png",
+        # "face_alignment_dst_path": f"/assets/{now}/alignment.bin",
+        # "face_parsing_dst_path": f"/assets/{now}/parsing.png",
         "coin_dst_path": {
             "15_dual" : f"/assets/{now}/coins/coin_15_{border}_dual.stl",
             "15" : f"/assets/{now}/coins/coin_15_{border}.stl",
@@ -234,9 +203,4 @@ async def uploader(
             "21_dual" : f"/assets/{now}/coins/coin_21_{border}_dual.stl",
             "21" : f"/assets/{now}/coins/coin_21_{border}.stl",
         },
-        "style": style,
-        "shape": shape,
-        "border": border,
-        # "embo": embo,
-        # "emboline": emboline,
     }
