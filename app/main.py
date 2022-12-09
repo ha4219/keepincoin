@@ -76,8 +76,8 @@ async def read_root():
     url / test
     '''
     return {
-        "version": "0.0.42",
-        "updatedAt": "Wed Oct 26 2022 20:51:47 GMT+0900 (Korean Standard Time)"
+        "version": "0.0.43",
+        "updatedAt": "Fri Dec 09 2022 15:27:28 GMT+0900"
     }
 
 @app.post('/uploader')
@@ -92,6 +92,8 @@ async def uploader(
         embo: bool = Form(False),
         emboline: bool = Form(False),
         img_type: ImgType = Form("image"),
+        is_pad_front: bool = Form(False),
+        is_pad_back: bool = Form(False),
 	):
     """
     basic logic
@@ -129,6 +131,21 @@ async def uploader(
             엠보라인 - 기본배경*embo-false시에 추가가능
             true(추가)
             false(추가하지않음) - default
+
+        *img_type: str - Required*
+            image - default
+            illust
+        
+        is_pad_front: bool
+            앞면 테두리쪽 여백 여부
+            false - default
+            true
+        
+        is_pad_back: bool
+            뒷면 테두리쪽 여백 여부
+            false - default
+            true
+        
     Return
     -----------
         "front_image_path": 앞면 이미지 파일 위치,
@@ -190,6 +207,8 @@ async def uploader(
             f'{res_path}/back_text.png' if back_text else f'{settings.KEEPASSET}/WHITE.png',
             border.upper(),
             img_type.upper(),
+            is_pad_front,
+            is_pad_back,
         ])
     except Exception as exc:
         raise HTTPException(status_code=520, detail=f"generate_coin error, {exc}") from exc
