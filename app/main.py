@@ -212,8 +212,8 @@ async def uploader(
             f'{res_path}/back_text.png' if back_text else f'{settings.KEEPASSET}/WHITE.png',
             border.upper(),
             img_type.upper(),
-            is_pad_front,
-            is_pad_back,
+            "MARGIN" if is_pad_front else "NONE",
+            "MARGIN" if is_pad_back else "NONE",
         ])
     except Exception as exc:
         raise HTTPException(status_code=520, detail=f"generate_coin error, {exc}") from exc
