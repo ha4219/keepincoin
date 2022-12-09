@@ -20,7 +20,12 @@ from app.path_util import now_to_str
 
 settings = Settings()
 
-app = FastAPI()
+VERSION = "0.0.43"
+
+app = FastAPI(
+    title="keepincoin",
+    version=VERSION,
+)
 
 # app.add_middleware(
 #     CORSMiddleware,
@@ -70,15 +75,15 @@ def execute_parsing(img, dst: str):
     '''
     _execute_face_parsing(dst, img, parsing, settings.KEEPCUDA)
 
-@app.get('/')
-async def read_root():
-    '''
-    url / test
-    '''
-    return {
-        "version": "0.0.43",
-        "updatedAt": "Fri Dec 09 2022 15:27:28 GMT+0900"
-    }
+# @app.get('/')
+# async def read_root():
+#     '''
+#     url / test
+#     '''
+#     return {
+#         "version": "0.0.43",
+#         "updatedAt": "Fri Dec 09 2022 15:27:28 GMT+0900"
+#     }
 
 @app.post('/uploader')
 async def uploader(
