@@ -205,13 +205,13 @@ async def uploader(
         # "face_alignment_dst_path": f"/assets/{now}/alignment.bin",
         # "face_parsing_dst_path": f"/assets/{now}/parsing.png",
         "coin_dst_path": {
-            "15_dual" : f"/assets/{now}/coins/coin_15_{border}_dual.stl",
+            # "15_dual" : f"/assets/{now}/coins/coin_15_{border}_dual.stl",
             "15" : f"/assets/{now}/coins/coin_15_{border}.stl",
 
-            "18_dual" : f"/assets/{now}/coins/coin_18_{border}_dual.stl",
+            # "18_dual" : f"/assets/{now}/coins/coin_18_{border}_dual.stl",
             "18" : f"/assets/{now}/coins/coin_18_{border}.stl",
 
-            "21_dual" : f"/assets/{now}/coins/coin_21_{border}_dual.stl",
+            # "21_dual" : f"/assets/{now}/coins/coin_21_{border}_dual.stl",
             "21" : f"/assets/{now}/coins/coin_21_{border}.stl",
         },
     }
