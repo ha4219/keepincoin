@@ -20,7 +20,9 @@ from app.path_util import now_to_str
 
 settings = Settings()
 
-VERSION = "0.0.43"
+VERSION = "0.0.46"
+
+TARGET = 218
 
 app = FastAPI(
     title="keepincoin",
@@ -93,6 +95,7 @@ async def uploader(
         border: Border = Form("basic"),
         is_pad_front: bool = Form(False),
         is_pad_back: bool = Form(False),
+        is_face_in_front: bool = Form(True),
 	):
     """
     basic logic
@@ -138,7 +141,14 @@ async def uploader(
     """
     if not front:
         raise HTTPException(status_code=517, detail="front parameter is required.")
-    front = Image.open(io.BytesIO(await front.read())).convert('RGB').resize((512, 512))
+    front = Image.open(io.BytesIO(await front.read())).convert('RGB')
+    front_width, front_height = front.size
+    margin_x = (front_width - TARGET) // 2
+    margin_y = (front_height - TARGET) // 2
+    if margin_x >= 0 and margin_y >= 0:
+        front = front.crop((margin_x, margin_y, margin_x + TARGET, margin_y + TARGET))
+    front = front.resize((512, 512))
+
     front_text = Image.open(io.BytesIO(await text.read())).convert('RGB').resize((512, 512)) \
         if text else None
     back = Image.open(io.BytesIO(await back.read())).convert('RGB').resize((512, 512)) \
@@ -183,6 +193,7 @@ async def uploader(
             border.upper(),
             "MARGIN" if is_pad_front else "NONE",
             "MARGIN" if is_pad_back else "NONE",
+            "FACE" if is_face_in_front else "NOFACE",
         ])
     except Exception as exc:
         raise HTTPException(status_code=520, detail=f"generate_coin error, {exc}") from exc
