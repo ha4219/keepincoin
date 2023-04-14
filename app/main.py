@@ -20,7 +20,7 @@ from app.path_util import now_to_str
 
 settings = Settings()
 
-VERSION = "0.0.46"
+VERSION = "0.0.47"
 
 TARGET = 218
 
